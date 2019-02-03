@@ -52,21 +52,20 @@ namespace webapiOverloadStartup.Bootstrap
 
             // Add extra global framework services
 
+            // build provider to resolve injected bootstrapped class
             var serviceProvider = services.BuildServiceProvider();
 
             StartupClassInstance = serviceProvider.GetService<IBootstrapStartup>();
 
-            // call bootstraped class method to register their own services 
+            // call bootstrapped class method to register their own services 
             StartupClassInstance.ConfigureServices(services);
 
-            // rebuild service provider to add bootstraped registered services
-            serviceProvider = services.BuildServiceProvider();
-
-            // Load controllers in bootstraped assembly
+            // Load controllers in bootstrapped assembly
             var assembly = StartupClassInstance.GetType().Assembly;
             mvcBuilder.AddApplicationPart(assembly);
 
-            return serviceProvider;
+            // rebuild service provider to add bootstrapped registered services
+            return services.BuildServiceProvider(); ;
         }
 
         public void Configure(IApplicationBuilder app)
