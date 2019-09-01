@@ -6,25 +6,88 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Builder.Internal;
 
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Unity.Microsoft.DependencyInjection;
+using Unity;
+using Microsoft.AspNetCore.Hosting.Internal;
+using System.Reflection;
+
 namespace webapiOverloadStartup.Bootstrap
 {
+    public class ConfigureStartupConfigureContainerFilter : IStartupConfigureContainerFilter<IUnityContainer>
+    {       
+        public ConfigureStartupConfigureContainerFilter()
+        {
+         
+        }
+
+        private static void CallStartupContainer(object startup, IUnityContainer container)
+        {
+            MethodInfo method = startup.GetType().GetMethod("ConfigureContainer");
+            method.Invoke(startup, new object[] { container });
+        }
+
+        public Action<IUnityContainer> ConfigureContainer(Action<IUnityContainer> next)
+        {
+            return containerBuilder =>
+            {
+                next(containerBuilder);
+                
+                var startupClassInstance = containerBuilder.Resolve<IBootstrapStartup>();
+                CallStartupContainer(startupClassInstance, containerBuilder);
+            };
+        }
+
+    }
+
     public static class BootstratpExtensions
     {
         public static IWebHostBuilder UseBootstrapStartup<TStartup>(this IWebHostBuilder builder) where TStartup : class
         {
-            var startupType = typeof(TStartup);
+            //var startupType = typeof(TStartup);
 
             builder
+                /*
+                .ConfigureServices((context, services) =>
+                {
+                    var serviceProvider = services.BuildServiceProvider();
+                    var st = serviceProvider.GetService<IStartup>();
+
+                    var uc = new UnityContainer();
+                    uc.RegisterInstance(st);
+
+                    //uc.RegisterSingleton( cbst);
+
+                    var factory = new ServiceProviderFactory(uc);
+                    services.Replace(ServiceDescriptor.Singleton<IServiceProviderFactory<IUnityContainer>>(factory));
+                    services.Replace(ServiceDescriptor.Singleton<IServiceProviderFactory<IServiceCollection>>(factory));
+                })
+                */
+                
                 .UseStartup<BaseIStartup>()
                 .ConfigureServices(services => // register delegate to call bootstraped class
                 {
                     services.AddSingleton(typeof(IBootstrapStartup), typeof(TStartup));
                 })
+                
+            ;
+
+            return builder;
+        }
+
+        public static IWebHostBuilder AddUnityServiceProvider(this IWebHostBuilder builder)
+        {
+            builder.UseUnityServiceProvider(new UnityContainer())
+                .ConfigureServices(
+                s => s.AddSingleton<IStartupConfigureContainerFilter<IUnityContainer>>(
+                    new ConfigureStartupConfigureContainerFilter()))
                 ;
 
             return builder;
         }
     }
+
+    
 
     public interface IBootstrapStartup
     {
@@ -32,7 +95,7 @@ namespace webapiOverloadStartup.Bootstrap
         void ConfigureServices(IServiceCollection services);
     }
                                     
-    public class BaseIStartup : IStartup
+    public class BaseIStartup //: IStartup
     {
         public IConfiguration Configuration { get; }
 
@@ -43,9 +106,12 @@ namespace webapiOverloadStartup.Bootstrap
 
         IBootstrapStartup StartupClassInstance;
 
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
+            var serviceProvider = services.BuildServiceProvider();
+
             var mvcBuilder = services.AddMvc();
+
             mvcBuilder.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerDocument();
@@ -53,7 +119,7 @@ namespace webapiOverloadStartup.Bootstrap
             // Add extra global framework services
 
             // build provider to resolve injected bootstrapped class
-            var serviceProvider = services.BuildServiceProvider();
+            //var serviceProvider = services.BuildServiceProvider();
 
             StartupClassInstance = serviceProvider.GetService<IBootstrapStartup>();
 
@@ -65,7 +131,7 @@ namespace webapiOverloadStartup.Bootstrap
             mvcBuilder.AddApplicationPart(assembly);
 
             // rebuild service provider to add bootstrapped registered services
-            return services.BuildServiceProvider(); ;
+            //return services.BuildServiceProvider();
         }
 
         public void Configure(IApplicationBuilder app)
@@ -88,39 +154,18 @@ namespace webapiOverloadStartup.Bootstrap
                 StartupClassInstance.Configure(app, env);
             }
         }
-    }
 
-    public class BaseStartup
-    {
-        public BaseStartup(IConfiguration configuration)
+        public void ConfigureContainer(IUnityContainer container)
         {
-            Configuration = configuration;
-        }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            services.AddSwaggerDocument();
-
-            //services.BuildServiceProvider().GetService<IBootstratStartup>().ConfigureServices(services);
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(ApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseMvc();
-
-            app.UseSwagger();
-            app.UseSwaggerUi3();
+            
+            /*
+            // Could be used to register more types
+            container.RegisterType<IExternalService, ExternalService>(new Interceptor<InterfaceInterceptor>(),
+                new InterceptionBehavior<LoggingAspect>());
+                */
         }
     }
+
+    
 }

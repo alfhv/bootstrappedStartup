@@ -10,11 +10,21 @@ namespace webapiOverloadStartup.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        IDataService _dataService;
+        IExternalService _externalService;
+        public ValuesController(IDataService dataService, IExternalService externalService)
+        {
+            _externalService = externalService;
+            _dataService = dataService;
+        }
+
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get([FromServices] IDataService dataService)
+        public ActionResult<IEnumerable<string>> Get()
         {
-            return dataService.GetValues();
+            var e = _externalService.GetValues();
+
+            return _dataService.GetValues();
         }
 
         // GET api/values/5
