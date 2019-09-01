@@ -1,19 +1,29 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Builder.Internal;
-
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Unity.Microsoft.DependencyInjection;
-using Unity;
-using Microsoft.AspNetCore.Hosting.Internal;
+using System;
 using System.Reflection;
+using Unity;
+using Unity.Microsoft.DependencyInjection;
 
 namespace webapiOverloadStartup.Bootstrap
 {
+    // All pipeline is based on .net Core StartupLoader:
+    // https://raw.githubusercontent.com/aspnet/Hosting/f9d145887773e0c650e66165e0c61886153bcc0b/src/Microsoft.AspNetCore.Hosting/Internal/StartupLoader.cs
+    // StartupFilter1
+    //   StartupFilter2
+    //     ConfigureServices
+    //   StartupFilter2
+    // StartupFilter1
+    // ConfigureContainerFilter1
+    //   ConfigureContainerFilter2
+    //     ConfigureContainer
+    //   ConfigureContainerFilter2
+    // ConfigureContainerFilter1
+
     public class ConfigureStartupConfigureContainerFilter : IStartupConfigureContainerFilter<IUnityContainer>
     {       
         public ConfigureStartupConfigureContainerFilter()
@@ -37,39 +47,18 @@ namespace webapiOverloadStartup.Bootstrap
                 CallStartupContainer(startupClassInstance, containerBuilder);
             };
         }
-
     }
 
     public static class BootstratpExtensions
     {
         public static IWebHostBuilder UseBootstrapStartup<TStartup>(this IWebHostBuilder builder) where TStartup : class
         {
-            //var startupType = typeof(TStartup);
-
             builder
-                /*
-                .ConfigureServices((context, services) =>
-                {
-                    var serviceProvider = services.BuildServiceProvider();
-                    var st = serviceProvider.GetService<IStartup>();
-
-                    var uc = new UnityContainer();
-                    uc.RegisterInstance(st);
-
-                    //uc.RegisterSingleton( cbst);
-
-                    var factory = new ServiceProviderFactory(uc);
-                    services.Replace(ServiceDescriptor.Singleton<IServiceProviderFactory<IUnityContainer>>(factory));
-                    services.Replace(ServiceDescriptor.Singleton<IServiceProviderFactory<IServiceCollection>>(factory));
-                })
-                */
-                
                 .UseStartup<BaseIStartup>()
                 .ConfigureServices(services => // register delegate to call bootstraped class
                 {
                     services.AddSingleton(typeof(IBootstrapStartup), typeof(TStartup));
                 })
-                
             ;
 
             return builder;
@@ -86,8 +75,6 @@ namespace webapiOverloadStartup.Bootstrap
             return builder;
         }
     }
-
-    
 
     public interface IBootstrapStartup
     {
@@ -155,17 +142,13 @@ namespace webapiOverloadStartup.Bootstrap
             }
         }
 
+        /// <summary>
+        /// dont use this method, just to be sure it is called
+        /// </summary>
+        /// <param name="container"></param>
         public void ConfigureContainer(IUnityContainer container)
         {
-
-            
-            /*
-            // Could be used to register more types
-            container.RegisterType<IExternalService, ExternalService>(new Interceptor<InterfaceInterceptor>(),
-                new InterceptionBehavior<LoggingAspect>());
-                */
+            // do nothing here as registration should be done in bootstrated class
         }
-    }
-
-    
+    }  
 }
