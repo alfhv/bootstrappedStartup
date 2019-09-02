@@ -1,5 +1,4 @@
-﻿using Castle.DynamicProxy;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,13 +16,12 @@ namespace webapiOverloadStartup
 {
     public class MinimalStartup : IBootstrapStartup
     {
+        public IConfiguration Configuration { get; }
+
         public MinimalStartup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -62,76 +60,5 @@ namespace webapiOverloadStartup
     {
         public Expression TargetMethod { get; internal set; }
         public Delegate Filter { get; internal set; }
-    }
-
-    public interface IInterceptionRegistration
-    {
-        void InterceptBy<TInterceptor>() where TInterceptor : class, IInterceptor;
-    }
-
-    public class InterceptionRegistration : IInterceptionRegistration
-    {
-        //public TImp _Implementation;
-        public Type InterceptorType;
-
-        public InterceptionRegistration()
-        {
-        }
-
-        public void InterceptBy<TInterceptor>()
-            where TInterceptor : class, IInterceptor
-        {
-            InterceptorType = typeof(TInterceptor);
-        }
-    }
-
-    public static class ServiceCollectionExtensions
-    {
-        public static Dictionary<Type, Type> _interceptors = new Dictionary<Type, Type>();
-
-        public static void InterceptBy<TInterceptor>(this IServiceCollection serviceProvider)
-            where TInterceptor : class, IInterceptor
-        {
-            serviceProvider.AddTransient<IInterceptor, TInterceptor>();
-        }
-
-        public static void AddTransientForInterception<TInterface, TImplementation>(this IServiceCollection services, 
-            Action<IInterceptionRegistration> configureInterceptor)
-            where TInterface : class where TImplementation : class, TInterface
-        {
-            services.AddTransient<TImplementation>();
-            
-            var ci = new InterceptionRegistration();
-            configureInterceptor.Invoke(ci);
-            services.AddTransient(ci.InterceptorType);
-
-            services.AddTransient<TInterface>(sp => 
-            {
-                var implementation = sp.GetRequiredService<TImplementation>();
-
-                var interceptor = (IInterceptor)sp.GetRequiredService(ci.InterceptorType);
-
-                var proxyFactory = new ProxyGenerator();
-                return proxyFactory.CreateInterfaceProxyWithTarget<TInterface>(implementation, interceptor);
-            });
-        }
-    }
-
-    public class TInterceptorData : IInterceptor
-    {
-        public void Intercept(IInvocation invocation)
-        {
-            invocation.Proceed();
-
-            var a = MinimalStartup.MethodFilters[0].Filter.DynamicInvoke(invocation.ReturnValue);
-        }
-    }
-
-    public class TInterceptorExternal : IInterceptor
-    {
-        public void Intercept(IInvocation invocation)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
