@@ -13,7 +13,6 @@ namespace webapiOverloadStartup
 
     public class InterceptionRegistration : IInterceptionRegistration
     {
-        //public TImp _Implementation;
         public Type InterceptorType;
 
         public InterceptionRegistration()
