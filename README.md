@@ -58,8 +58,8 @@ services.AddTransientForInterception<IDataService, DataService>(sc => sc.Interce
 
 Register IDataService interface, that is implemented by DataService class, and intercept this class with TInterceptorData class 
 
-TInterceptorData implement interface Castle.DynamicProxy.IInterceptor which provide the method void 
+TInterceptorData implement interface Castle.DynamicProxy.IInterceptor which provide the method  
 ```
-Intercept(IInvocation invocation)
+void Intercept(IInvocation invocation) { }
 ```
 all we need to do the interception job.
