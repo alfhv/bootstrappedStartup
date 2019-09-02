@@ -45,12 +45,9 @@ void ConfigureContainer(IUnityContainer container)
 
 ### Use Interceptors:
 
-in Startup.cs check 
-```
-void ConfigureServices(IServiceCollection services) 
-```
+in Startup.cs check  ```void ConfigureServices(IServiceCollection services)```
 
-call method:
+To register an interceptor call method:
 
 ```
 services.AddTransientForInterception<IDataService, DataService>(sc => sc.InterceptBy<TInterceptorData>());
