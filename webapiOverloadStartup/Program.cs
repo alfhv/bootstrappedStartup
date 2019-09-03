@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
-using webapiOverloadStartup.Bootstrap;
-using Unity.Microsoft.DependencyInjection;
-using Unity;
-using Microsoft.AspNetCore.Hosting.Internal;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
+using webapiOverloadStartup.Bootstrap.UnityContainer;
 
 namespace webapiOverloadStartup
 {

@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.6" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
-    <PackageReference Include="NSwag.AspNetCore" Version="12.0.13" />
+    <PackageReference Include="unity" Version="5.11.1" />
+    <PackageReference Include="Unity.Microsoft.DependencyInjection" Version="5.10.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\webapiOverloadStartup.Bootstrap\webapiOverloadStartup.Bootstrap.csproj" />
   </ItemGroup>
 
 </Project>

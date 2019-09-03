@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webapiOverloadStartup", "we
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webapiOverloadStartup.Bootstrap", "webapiOverloadStartup.Bootstrap\webapiOverloadStartup.Bootstrap.csproj", "{DD530BC8-BCCF-404A-81D2-F1AEE9A705B6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webapiOverloadStartup.Bootstrap.UnityContainer", "webapiOverloadStartup.Bootstrap.UnityContainer\webapiOverloadStartup.Bootstrap.UnityContainer.csproj", "{0A4E4C4F-B002-442D-959C-2DF7E076E082}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DD530BC8-BCCF-404A-81D2-F1AEE9A705B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD530BC8-BCCF-404A-81D2-F1AEE9A705B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD530BC8-BCCF-404A-81D2-F1AEE9A705B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A4E4C4F-B002-442D-959C-2DF7E076E082}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A4E4C4F-B002-442D-959C-2DF7E076E082}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A4E4C4F-B002-442D-959C-2DF7E076E082}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A4E4C4F-B002-442D-959C-2DF7E076E082}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

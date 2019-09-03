@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Unity;
 
-namespace webapiOverloadStartup.Bootstrap
+namespace webapiOverloadStartup.Bootstrap.UnityContainer
 {
     public class BaseStartupWithContainer : BaseStartup
     {
