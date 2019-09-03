@@ -2,6 +2,14 @@
 
 This repo contains severals samples as:
 
+- use a BaseStartup to wrap Startup in a webapi
+- how to use Unity as Service Provider. 
+- implement Interceptors (AOP) but without replacing the service provider.
+
+## Project webapiOverloadStartup:
+
+the wrapped webapi Startup class.
+
 ## Project webapiOverloadStartup.Bootstrap
 
 Provide a way to use a Base StartupClass in a webapi where to put common functionalities. 
@@ -11,12 +19,7 @@ BaseIStartup class is the Startup class dotnet will see and use in the pipeline.
 
 Method UseBootstrapStartup() : call this method to wrap a client Startup class, it will look and work as a regular Startup.
 
-## Project webapiOverloadStartup:
-
-Implement the wrapped Startup class.
-
-Also provide sample about how to use Unity as Service Provider. 
-Also implement Interceptors (AOP) but without replacing the service provider.
+## Project webapiOverloadStartup.Bootstrap.UnityContainer
 
 ### use Unity as Service Provider in the BaseStartup: 
 
