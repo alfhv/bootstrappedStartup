@@ -17,10 +17,8 @@ namespace webapiOverloadStartup
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                //.UseUnityServiceProvider()
-                .AddUnityServiceProvider()
-                .UseBootstrapStartup<MinimalStartup>()
+            WebHost.CreateDefaultBuilder(args)               
+                .UseBootstrapStartupWithContainer<MinimalStartup>()
                 ;
     }
 }

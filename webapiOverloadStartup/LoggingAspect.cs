@@ -18,7 +18,10 @@ namespace webapiOverloadStartup
 
         public IMethodReturn Invoke(IMethodInvocation input, GetNextInterceptionBehaviorDelegate getNext)
         {
-            throw new NotImplementedException();
+            // Invoke the next behavior in the chain. 
+            var result = getNext()(input, getNext);
+
+            return result;
         }
     }
 }

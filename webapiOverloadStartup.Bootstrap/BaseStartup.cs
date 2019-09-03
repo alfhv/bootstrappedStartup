@@ -4,20 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Unity;
-using Unity.Microsoft.DependencyInjection;
 
 namespace webapiOverloadStartup.Bootstrap
 {
-    public class BaseIStartup 
+    public class BaseStartup 
     {
-        public IConfiguration Configuration { get; }
+        private readonly IConfiguration Configuration;
+        private readonly IBootstrapStartup StartupClassInstance;
 
-        public BaseIStartup(IConfiguration configuration)
+        public BaseStartup(IConfiguration configuration, IBootstrapStartup bootstrapStartup)
         {
             Configuration = configuration;
+            StartupClassInstance = bootstrapStartup;
         }
-
-        IBootstrapStartup StartupClassInstance;
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -28,11 +27,6 @@ namespace webapiOverloadStartup.Bootstrap
             services.AddSwaggerDocument();
 
             // Add extra global framework services
-
-            // build provider to resolve injected bootstrapped class
-            var serviceProvider = services.BuildServiceProvider();
-
-            StartupClassInstance = serviceProvider.GetService<IBootstrapStartup>();
 
             // call bootstrapped class method to register their own services 
             StartupClassInstance.ConfigureServices(services);
@@ -63,13 +57,6 @@ namespace webapiOverloadStartup.Bootstrap
             }
         }
 
-        /// <summary>
-        /// dont use this method, just to be sure it is called
-        /// </summary>
-        /// <param name="container"></param>
-        public void ConfigureContainer(IUnityContainer container)
-        {
-            // do nothing here as registration should be done in bootstrated class
-        }
+        
     }  
 }
