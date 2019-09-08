@@ -10,10 +10,10 @@
 
     <PackageReference Include="Unity" Version="5.11.1" />
     <PackageReference Include="Unity.Interception" Version="5.11.1" />
+    <PackageReference Include="Unity.Microsoft.DependencyInjection" Version="5.10.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\webapiOverloadStartup.Bootstrap.UnityContainer\webapiOverloadStartup.Bootstrap.UnityContainer.csproj" />
     <ProjectReference Include="..\webapiOverloadStartup.Bootstrap\webapiOverloadStartup.Bootstrap.csproj" />
   </ItemGroup>
 

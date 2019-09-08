@@ -25,7 +25,7 @@ namespace webapiOverloadStartup.Bootstrap.UnityContainer
         public static IWebHostBuilder AddUnityServiceProvider(this IWebHostBuilder builder)
         {
             builder
-                .UseUnityServiceProvider(new Unity.UnityContainer())
+                .UseUnityServiceProvider()
                 .ConfigureServices(
                 s => s.AddSingleton<IStartupConfigureContainerFilter<IUnityContainer>>(
                     new ConfigureStartupConfigureContainerFilter()))

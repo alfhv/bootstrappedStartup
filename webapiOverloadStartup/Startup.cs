@@ -38,6 +38,7 @@ namespace webapiOverloadStartup
             AddFilter((DataService m) => m.GetValues(), m => m.Where(s => s.Contains("1")).ToList());
         }
 
+        
         public void ConfigureContainer(IUnityContainer container)
         {
             // Register your types in UnityContainer
@@ -47,6 +48,7 @@ namespace webapiOverloadStartup
             container.RegisterType<IExternalService, ExternalService>(new Interceptor<InterfaceInterceptor>(), 
                 new InterceptionBehavior<LoggingAspect>());
         }
+        
 
         private void AddFilter<T, TResult>(Expression<Func<T, TResult>> targetMethod, Func<TResult, TResult> filter)
         {

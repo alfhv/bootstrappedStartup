@@ -28,11 +28,11 @@ namespace webapiOverloadStartup.Bootstrap
             // Add extra global framework services
 
             // call bootstrapped class method to register their own services 
-            StartupClassInstance.ConfigureServices(services);
+            //StartupClassInstance.ConfigureServices(services);
 
             // Load controllers in bootstrapped assembly
-            var assembly = StartupClassInstance.GetType().Assembly;
-            mvcBuilder.AddApplicationPart(assembly);
+            //var assembly = StartupClassInstance.GetType().Assembly;
+            //mvcBuilder.AddApplicationPart(assembly);
         }
 
         public void Configure(IApplicationBuilder app)
@@ -44,7 +44,7 @@ namespace webapiOverloadStartup.Bootstrap
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            //app.UseMvc();
 
             app.UseSwagger();
             app.UseSwaggerUi3();
@@ -55,7 +55,5 @@ namespace webapiOverloadStartup.Bootstrap
                 StartupClassInstance.Configure(app, env);
             }
         }
-
-        
     }  
 }
